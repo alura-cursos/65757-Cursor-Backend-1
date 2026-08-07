@@ -33,9 +33,10 @@ Usuário de teste do seed:
 | POST | `/api/auth/register` | não | Cadastro |
 | POST | `/api/auth/login` | não | Login |
 | GET | `/api/auth/me` | sim | Usuário autenticado |
-| GET | `/api/cars` | não | Lista frota (`?category=&q=`) |
+| GET | `/api/cars` | não | Catálogo bruto (`?category=&q=`) |
 | GET | `/api/cars/categories` | não | Categorias para filtro |
 | GET | `/api/cars/:id` | não | Detalhe (id ou slug) |
+| GET | `/api/availability` | não | Frota disponível no período |
 | GET | `/api/locations` | não | Locais de retirada/devolução |
 | GET | `/api/protections` | não | Planos Básica / Padrão / Avançada |
 | POST | `/api/reservations/quote` | não | Simula diárias e total |
@@ -44,10 +45,16 @@ Usuário de teste do seed:
 | GET | `/api/reservations/:id` | sim | Detalhe (id ou código) |
 | PATCH | `/api/reservations/:id/cancel` | sim | Cancela reserva |
 
+### `GET /api/availability`
+
+Query obrigatória: `pickupLocationId`, `returnLocationId`, `pickupDate`, `returnDate` (`YYYY-MM-DD`).  
+Opcional: `category`, `q`.  
+Resposta: mesmo shape de `GET /api/cars` (array de carros sem overlap com reservas `CONFIRMED`).
+
 ## Fluxo do front (Figma)
 
 1. **Home** → `GET /api/cars` + `GET /api/cars/categories`
-2. **Busca** → `GET /api/locations` + filtros em `/api/cars`
+2. **Buscar** → `GET /api/locations` + `GET /api/availability?...`
 3. **Detalhes** → `GET /api/cars/:slug`
 4. **Reserva** → `GET /api/protections` + `POST /api/reservations/quote`
 5. **Confirmação** → `POST /api/reservations` (retorna `code` tipo `XYZH6013`)
