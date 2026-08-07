@@ -1,0 +1,37 @@
+import type { Request, Response } from 'express'
+import { ReservationsService } from './reservations.service.js'
+
+export class ReservationsController {
+  private readonly service = new ReservationsService()
+
+  async quote(req: Request, res: Response) {
+    const quote = await this.service.quote(req.body)
+    return res.json(quote)
+  }
+
+  async create(req: Request, res: Response) {
+    const reservation = await this.service.create(req.user!.sub, req.body)
+    return res.status(201).json(reservation)
+  }
+
+  async list(req: Request, res: Response) {
+    const reservations = await this.service.listByUser(req.user!.sub)
+    return res.json(reservations)
+  }
+
+  async getById(req: Request, res: Response) {
+    const reservation = await this.service.getByIdOrCode(
+      req.user!.sub,
+      req.params.id as string,
+    )
+    return res.json(reservation)
+  }
+
+  async cancel(req: Request, res: Response) {
+    const reservation = await this.service.cancel(
+      req.user!.sub,
+      req.params.id as string,
+    )
+    return res.json(reservation)
+  }
+}
