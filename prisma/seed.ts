@@ -25,23 +25,26 @@ const protections = [
   {
     slug: 'padrao',
     name: 'Padrão',
-    pricePerDay: 65,
+    pricePerDay: 80,
     benefits: JSON.stringify([
       'Proteção contra furto',
       'Proteção contra incêndio',
       'Perda total do veículo',
       'Danos e/ou avarias causados por colisões e/ou eventos adversos',
+      'Redução de Coparticipação',
     ]),
   },
   {
     slug: 'avancada',
     name: 'Avançada',
-    pricePerDay: 95,
+    pricePerDay: 120,
     benefits: JSON.stringify([
       'Proteção contra roubo',
       'Proteção contra furto',
       'Proteção contra incêndio',
       'Perda total do veículo',
+      'Danos e/ou avarias causados por colisões e/ou eventos adversos',
+      'Danos a vidros e pneus',
       'Proteção contra Terceiros',
       'Isenção total de Coparticipação',
     ]),
