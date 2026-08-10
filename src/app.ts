@@ -7,7 +7,7 @@ export const app = express()
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(',') ?? true,
+    origin: true,
   }),
 )
 app.use(express.json())

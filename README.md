@@ -85,4 +85,4 @@ Resposta inclui `days`, `carSubtotal`, `protectionSubtotal` e `totalPrice` (ex.:
 
 No Vite, use `VITE_API_URL=http://localhost:3333/api` e troque o mock de `src/services/cars.ts` por `fetch`.
 
-CORS já libera `http://localhost:5173` via `.env`.
+CORS está liberado para qualquer origem.
