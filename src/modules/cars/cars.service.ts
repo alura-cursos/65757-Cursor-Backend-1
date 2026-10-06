@@ -10,6 +10,10 @@ export class CarsService {
       available: true,
     }
 
+    if(query.cursor){
+      where.pricePerDay={gt:parseFloat(query.cursor)}
+    }
+
     if (query.category) {
       where.category = {
         contains: query.category,
@@ -19,17 +23,21 @@ export class CarsService {
     if (query.q) {
       where.OR = [
         { name: { contains: query.q } },
-        { category: { contains: query.q } },
         { description: { contains: query.q } },
       ]
     }
 
+
     const cars = await prisma.car.findMany({
       where,
-      orderBy: { pricePerDay: 'asc' },
+      orderBy: {pricePerDay:'asc'},
+      take:2
     })
-
-    return cars.map(serializeCar)
+    
+    return {
+      carros:cars.map(serializeCar),
+      cursor:cars[cars.length-1].pricePerDay
+    }
   }
 
   async categories() {

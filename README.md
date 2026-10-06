@@ -6,44 +6,57 @@ API REST da **Hermex Locadora de Veículos**, alinhada ao Figma e ao frontend Vi
 
 - Node.js + Express + TypeScript
 - Prisma + SQLite
-- JWT (auth)
 - Zod (validação)
+- Docker / Docker Compose
 
-## Setup
+## Setup local
 
 ```bash
 npm install
-npx prisma migrate dev --name init
+npx prisma migrate dev
 npm run db:seed
 npm run dev
 ```
 
 API em `http://localhost:3333`.
 
-Usuário de teste do seed:
+## Setup com Docker
 
-- e-mail: `cliente@hermex.com`
-- senha: `123456`
+```bash
+docker compose up --build
+```
+
+A API sobe em `http://localhost:3333`, aplica as migrations e executa o seed automaticamente.
+
+Para não reseedar a cada start:
+
+```bash
+SEED_ON_START=false docker compose up --build
+```
+
+O SQLite fica persistido no volume Docker `hermex_data`.
 
 ## Endpoints
 
-| Método | Rota | Auth | Descrição |
-|--------|------|------|-----------|
-| GET | `/health` | não | Health check |
-| POST | `/api/auth/register` | não | Cadastro |
-| POST | `/api/auth/login` | não | Login |
-| GET | `/api/auth/me` | sim | Usuário autenticado |
-| GET | `/api/cars` | não | Catálogo bruto (`?category=&q=`) |
-| GET | `/api/cars/categories` | não | Categorias para filtro |
-| GET | `/api/cars/:id` | não | Detalhe (id ou slug) |
-| GET | `/api/availability` | não | Frota disponível no período |
-| GET | `/api/locations` | não | Locais de retirada/devolução |
-| GET | `/api/protections` | não | Planos Básica / Padrão / Avançada |
-| POST | `/api/reservations/quote` | não | Simula diárias e total |
-| GET | `/api/reservations` | sim | Minhas reservas |
-| POST | `/api/reservations` | sim | Confirma reserva |
-| GET | `/api/reservations/:id` | sim | Detalhe (id ou código) |
-| PATCH | `/api/reservations/:id/cancel` | sim | Cancela reserva |
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/health` | Health check |
+| GET | `/api/cars` | Catálogo bruto (`?category=&q=`) |
+| GET | `/api/cars/categories` | Categorias para filtro |
+| GET | `/api/cars/:id` | Detalhe (id ou slug) |
+| GET | `/api/availability` | Frota disponível no período |
+| GET | `/api/locations` | Locais de retirada/devolução |
+| GET | `/api/protections` | Planos Básica / Padrão / Avançada |
+| POST | `/api/protections` | Cria plano de proteção |
+| PUT | `/api/protections/:id` | Atualiza plano de proteção |
+| DELETE | `/api/protections/:id` | Remove plano de proteção |
+| POST | `/api/reservations/quote` | Simula diárias e total |
+| GET | `/api/reservations` | Lista reservas |
+| POST | `/api/reservations` | Confirma reserva |
+| GET | `/api/reservations/:id` | Detalhe (id ou código) |
+| PATCH | `/api/reservations/:id/cancel` | Cancela reserva |
+
+Nenhuma rota exige autenticação.
 
 ### `GET /api/availability`
 
@@ -64,7 +77,6 @@ Resposta: mesmo shape de `GET /api/cars` (array de carros sem overlap com reserv
 
 ```http
 POST /api/reservations
-Authorization: Bearer <token>
 Content-Type: application/json
 
 {

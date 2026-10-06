@@ -10,28 +10,24 @@ export class ReservationsController {
   }
 
   async create(req: Request, res: Response) {
-    const reservation = await this.service.create(req.user!.sub, req.body)
+    const reservation = await this.service.create(req.body)
     return res.status(201).json(reservation)
   }
 
-  async list(req: Request, res: Response) {
-    const reservations = await this.service.listByUser(req.user!.sub)
+  async list(_req: Request, res: Response) {
+    const reservations = await this.service.list()
     return res.json(reservations)
   }
 
   async getById(req: Request, res: Response) {
     const reservation = await this.service.getByIdOrCode(
-      req.user!.sub,
       req.params.id as string,
     )
     return res.json(reservation)
   }
 
   async cancel(req: Request, res: Response) {
-    const reservation = await this.service.cancel(
-      req.user!.sub,
-      req.params.id as string,
-    )
+    const reservation = await this.service.cancel(req.params.id as string)
     return res.json(reservation)
   }
 }

@@ -112,8 +112,25 @@ export class ReservationsService {
     }
   }
 
-  async create(userId: string, input: CreateReservationInput) {
+  private async getDefaultUserId() {
+    const user = await prisma.user.findFirst({
+      where: { email: 'cliente@hermex.com' },
+      select: { id: true },
+    })
+
+    if (!user) {
+      throw new AppError(
+        'Usuário padrão não encontrado. Execute o seed do banco.',
+        500,
+      )
+    }
+
+    return user.id
+  }
+
+  async create(input: CreateReservationInput) {
     const quote = await this.buildQuote(input)
+    const userId = await this.getDefaultUserId()
 
     const overlapping = await prisma.reservation.findFirst({
       where: {
@@ -163,9 +180,8 @@ export class ReservationsService {
     return serializeReservation(reservation)
   }
 
-  async listByUser(userId: string) {
+  async list() {
     const reservations = await prisma.reservation.findMany({
-      where: { userId },
       include: {
         car: true,
         pickupLocation: true,
@@ -178,10 +194,9 @@ export class ReservationsService {
     return reservations.map(serializeReservation)
   }
 
-  async getByIdOrCode(userId: string, idOrCode: string) {
+  async getByIdOrCode(idOrCode: string) {
     const reservation = await prisma.reservation.findFirst({
       where: {
-        userId,
         OR: [{ id: idOrCode }, { code: idOrCode }],
       },
       include: {
@@ -199,10 +214,9 @@ export class ReservationsService {
     return serializeReservation(reservation)
   }
 
-  async cancel(userId: string, idOrCode: string) {
+  async cancel(idOrCode: string) {
     const reservation = await prisma.reservation.findFirst({
       where: {
-        userId,
         OR: [{ id: idOrCode }, { code: idOrCode }],
       },
     })
