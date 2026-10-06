@@ -34,9 +34,11 @@ export class CarsService {
       take:2
     })
     
+    const lastCar = cars[cars.length - 1]
+
     return {
-      carros:cars.map(serializeCar),
-      cursor:cars[cars.length-1].pricePerDay
+      carros: cars.map(serializeCar),
+      cursor: lastCar ? lastCar.pricePerDay : null,
     }
   }
 
